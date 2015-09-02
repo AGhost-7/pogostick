@@ -53,13 +53,14 @@ function mkRemoteFactory(promiseFactory, requestFactory, options) {
  */
 module.exports = function(promiseFactory, requestFactory, opts) {
 	// clone this just to be on the safe side.
-	var defOptions = opts ? extend({}, opts) : {};
+	var heldOptions = opts ? extend({}, opts) : {};
 	// return a client
 	return function(opts, cb) {
 		// this will be the options object used for all requests for the client instance, in 
 		// part determined by the factory.
-		var options = extend(extend({}, defOptions), opts);
-		requestFactory(opts, function(err, msg) {
+		var defOptions = extend(extend({}, heldOptions), opts);
+		
+		requestFactory(extend({ body: serializer.ls() }, defOptions), function(err, msg) {
 			if(err) return cb(err);
 
 			var client = {};
@@ -69,7 +70,7 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 			} catch(er) {
 				return cb(new Error('JSON parser error: ' + er.message));
 			}
-			var remoteProducer = mkRemoteFactory(promiseFactory, requestFactory, options);
+			var remoteProducer = mkRemoteFactory(promiseFactory, requestFactory, defOptions);
 			var remote = Object.keys(listing).reduce(function(accu, key) {
 				accu[key] = parseField(listing[key], key, remoteProducer);
 				return accu;

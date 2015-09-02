@@ -1,3 +1,5 @@
+/* jshint expr: true */
+
 var client = require('../lib/client');
 var serializer = require('../lib/serializer');
 var Promise = require('bluebird');
@@ -7,8 +9,9 @@ var promiseFactory = function(resolver) { return new Promise(resolver); };
 
 var response;
 var request;
+// this is our "network layer" implementation.
 var clientSpy = function(opts, cb) {
-	request = opts.body;
+	request = opts.body.str ? opts.body.str : opts.body;
 	cb(null, response);
 };
 
@@ -29,18 +32,17 @@ before(function(done) {
 
 describe('client', function() {
 	
-	it('should have methods should properly initialized', function() {
+	it('should have methods properly initialized', function() {
 		expect(remote.mock).to.exist;
 		expect(remote.mock).to.not.throw(Error);
 	});	
 
 	it('should foo', function(done) {
 		response = serializer.res(0,'', 'bar').split('\n');
-	
 		var p = remote.mock('foo');
-		expect(request).to.contain('foo');
 			
 		p.then(function(res) {
+			expect(request).to.contain('foo');
 			expect(res).to.equal('bar');
 			done();
 		});
