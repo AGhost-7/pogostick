@@ -4,14 +4,16 @@ var _ = require('lodash');
 var chai = require('chai');
 chai.should();
 
-describe('ls method', function() {
-	it('should not throw an exception', function() {
-		serializer.ls();
-	});
 
-});
 describe('serializer', function() {
+	throw 'foobar';
+	describe('ls method', function() {
+		it('should not throw an exception', function() {
+			serializer.ls();
+		});
 
+	});
+	
 	describe('init method', function() {
 		var init = serializer.init;
 		
