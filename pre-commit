@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-check-dir () {
-	$(cd $1 && npm run precommit)
+precommit=npm run precommit
+
+check-dir() {
+	pushd $1 
+	npm run precommit 
+	popd
 }
 
 echo 'Validating modules before committing...'

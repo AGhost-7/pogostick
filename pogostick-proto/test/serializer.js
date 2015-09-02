@@ -6,7 +6,6 @@ chai.should();
 
 
 describe('serializer', function() {
-	throw 'foobar';
 	describe('ls method', function() {
 		it('should not throw an exception', function() {
 			serializer.ls();
