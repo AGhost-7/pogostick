@@ -1,0 +1,80 @@
+var serializer = require('./serializer');
+var extend = require('extend');
+
+function parseField(val, path, mkSender) {
+	if(val === true) {
+		return mkSender(path);
+	} else if(Array.isArray(val)) {
+		var arr = [];
+		for(var i = 0; i < val.length; i++) {
+			arr.push(parseField(val[i], path + '.' + i, mkSender));
+		}
+		return arr;
+	} else if(typeof val === 'object') {
+		var res = {};
+		for(var key in val) {
+			if(val.hasOwnProperty(key)) {
+				res[key] = parseField(val[key], path + '.' + key);
+			}
+		}
+		return res;
+	}
+}
+
+function mkRemoteFactory(promiseFactory, requestFactory, options) {
+	return function(path) {
+		return function() {
+			var args = arguments;
+			return promiseFactory(function(resolve, reject) {
+
+				requestFactory(extend({ body: serializer.call(path, args) }, options), function(err, msg) {
+					if(err) return reject(err);
+					
+					if(msg[0] === 'err') {
+						// if there is an error, I still need to parse the response
+						// which contains the details on the error.
+						reject(new Error(JSON.parse(msg[3])));
+					} else if(msg[0] === 'res') {
+						resolve(JSON.parse(msg[3]));
+					}	
+				});
+			});
+		};
+	};
+}
+
+/* To make this agnostic, I need to use a function which will handle the 
+ * the request logic, abstracting the transport completely from this module.
+ *
+ * promiseFactory: function(resolver: function(resolve, reject)): Promise
+ *
+ * requestFactory: function(options, cb: function(err, msg: Array<String>)): void
+ *
+ */
+module.exports = function(promiseFactory, requestFactory, opts) {
+	// clone this just to be on the safe side.
+	var defOptions = opts ? extend({}, opts) : {};
+	// return a client
+	return function(opts, cb) {
+		// this will be the options object used for all requests for the client instance, in 
+		// part determined by the factory.
+		var options = extend(extend({}, defOptions), opts);
+		requestFactory(opts, function(err, msg) {
+			if(err) return cb(err);
+
+			var client = {};
+			var listing;
+			try {
+				listing = JSON.parse(msg[3]);
+			} catch(er) {
+				return cb(new Error('JSON parser error: ' + er.message));
+			}
+			var remoteProducer = mkRemoteFactory(promiseFactory, requestFactory, options);
+			var remote = Object.keys(listing).reduce(function(accu, key) {
+				accu[key] = parseField(listing[key], key, remoteProducer);
+				return accu;
+			}, {});
+			cb(null, remote);	
+		});
+	};
+};

@@ -1,0 +1,32 @@
+{
+  "name": "pogostick-http",
+  "version": "1.0.0",
+  "description": "Implementation of the pogostick protocol for nodeJS https",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AGhost-7/pogostick.git"
+  },
+  "keywords": [
+    "rpc",
+    "http",
+    "promise"
+  ],
+  "author": "Jonathan Boudreau",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AGhost-7/pogostick/issues"
+  },
+  "homepage": "https://github.com/AGhost-7/pogostick#readme",
+  "devDependencies": {
+    "bluebird": "^2.9.34",
+    "chai": "^3.2.0",
+    "mocha": "^2.3.0"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "pogostick-proto",
+  "version": "1.0.1",
+  "description": "Pogostick protocol functions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AGhost-7/pogostick.git"
+  },
+  "contributors": [
+    {
+      "name": "Jonathan Boudreau",
+      "email": "jonathan.boudreau.92@gmail.com"
+    }
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "main": "index.js",
+  "author": "AGhost-7",
+  "keywords": [
+    "rpc",
+    "server",
+    "client"
+  ],
+  "engines": {
+    "node": ">= 0.12"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "bluebird": "^2.9.34",
+    "chai": "^3.2.0",
+    "lodash": "^3.10.1",
+    "mocha": "^2.3.0"
+  },
+  "dependencies": {
+    "extend": "^3.0.0"
+  }
+}
