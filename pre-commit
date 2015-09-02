@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+check-dir () {
+	$(cd $1 && npm run precommit)
+}
+
+echo 'Validating modules before committing...'
+check-dir 'pogostick-proto'
+

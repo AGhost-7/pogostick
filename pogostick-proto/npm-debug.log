@@ -2,28 +2,27 @@
 1 verbose cli [ '/Users/jboudreau/.nvm/v0.10.38/bin/node',
 1 verbose cli   '/Users/jboudreau/.nvm/v0.10.38/bin/npm',
 1 verbose cli   'run',
-1 verbose cli   'test' ]
+1 verbose cli   'precommit' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.38
-4 verbose run-script [ 'pretest', 'test', 'posttest' ]
-5 info pretest pogostick-proto@1.0.1
-6 info test pogostick-proto@1.0.1
-7 verbose unsafe-perm in lifecycle true
-8 info pogostick-proto@1.0.1 Failed to exec test script
-9 error pogostick-proto@1.0.1 test: `mocha`
-9 error Exit status 8
-10 error Failed at the pogostick-proto@1.0.1 test script.
-10 error This is most likely a problem with the pogostick-proto package,
-10 error not with npm itself.
-10 error Tell the author that this fails on your system:
-10 error     mocha
-10 error You can get their info via:
-10 error     npm owner ls pogostick-proto
-10 error There is likely additional logging output above.
-11 error System Darwin 14.4.0
-12 error command "/Users/jboudreau/.nvm/v0.10.38/bin/node" "/Users/jboudreau/.nvm/v0.10.38/bin/npm" "run" "test"
-13 error cwd /Users/jboudreau/workspaces/pogostick/pogostick-proto
-14 error node -v v0.10.38
-15 error npm -v 1.4.28
-16 error code ELIFECYCLE
-17 verbose exit [ 1, true ]
+4 verbose run-script [ 'precommit' ]
+5 info precommit pogostick-proto@1.0.1
+6 verbose unsafe-perm in lifecycle true
+7 info pogostick-proto@1.0.1 Failed to exec precommit script
+8 error pogostick-proto@1.0.1 precommit: `npm run test && npm run lint`
+8 error Exit status 1
+9 error Failed at the pogostick-proto@1.0.1 precommit script.
+9 error This is most likely a problem with the pogostick-proto package,
+9 error not with npm itself.
+9 error Tell the author that this fails on your system:
+9 error     npm run test && npm run lint
+9 error You can get their info via:
+9 error     npm owner ls pogostick-proto
+9 error There is likely additional logging output above.
+10 error System Darwin 14.4.0
+11 error command "/Users/jboudreau/.nvm/v0.10.38/bin/node" "/Users/jboudreau/.nvm/v0.10.38/bin/npm" "run" "precommit"
+12 error cwd /Users/jboudreau/workspaces/pogostick/pogostick-proto
+13 error node -v v0.10.38
+14 error npm -v 1.4.28
+15 error code ELIFECYCLE
+16 verbose exit [ 1, true ]

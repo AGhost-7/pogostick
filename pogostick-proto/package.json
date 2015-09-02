@@ -15,7 +15,9 @@
   "scripts": {
     "test": "mocha",
     "lint": "jshint .",
-    "validate": "npm ls"
+    "precommit": "npm run test && npm run lint",
+    "prepublish": "node ../policy.js"
+
   },
   "main": "index.js",
   "author": "AGhost-7",
