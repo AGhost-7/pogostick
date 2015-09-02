@@ -20,11 +20,8 @@ var remote;
 
 before(function(done) {
 	response = serializer.init({mock: function() {} })(Date.now(), '').split('\n');
-	//console.log('woop');
-	//console.log(response);
 	mkClient({}, function(err, r) {
 		if(err) return done(err);
-		//console.log('heh');
 		remote = r;
 		done();
 	});
@@ -48,4 +45,18 @@ describe('client', function() {
 		});
 	});
 
+	it('should be able to handle deep functions', function(done) {
+		response = serializer.init({
+			foo: {
+				bar: function() {}
+			}
+		})(0, '').split('\n');
+
+		mkClient({}, function(err, r) {
+			if(err) return done(err);
+			expect(r.foo.bar).to.exist;
+			done();
+		});
+
+	});
 });

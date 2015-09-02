@@ -7,15 +7,18 @@
     "test": "test"
   },
   "scripts": {
-		"lint": "jshint",
+    "lint": "jshint",
     "test": "mocha",
-		"precommit": "lint && test"
+    "precommit": "lint && test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AGhost-7/pogostick.git"
   },
-	"pre-commit": ["lint", "test"],
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "keywords": [
     "rpc",
     "http",
@@ -31,5 +34,9 @@
     "bluebird": "^2.9.34",
     "chai": "^3.2.0",
     "mocha": "^2.3.0"
+  },
+  "dependencies": {
+    "extend": "^3.0.0",
+    "pogostick-proto": "^1.0.1"
   }
 }

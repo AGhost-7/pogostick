@@ -14,7 +14,7 @@ function parseField(val, path, mkSender) {
 		var res = {};
 		for(var key in val) {
 			if(val.hasOwnProperty(key)) {
-				res[key] = parseField(val[key], path + '.' + key);
+				res[key] = parseField(val[key], path + '.' + key, mkSender);
 			}
 		}
 		return res;

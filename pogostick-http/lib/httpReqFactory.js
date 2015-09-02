@@ -2,6 +2,7 @@ var http = require('http');
 var extend = require('extend');
 
 module.exports = function(options, cb) {
+
 	var req = http.request(extend({ method: 'POST' }, options), function(res) {
 		var str = '';
 		res.on('data', function(buf){
@@ -12,6 +13,11 @@ module.exports = function(options, cb) {
 		});
 	});
 	req.on('error', cb);
-	if(options.body !== undefined) req.write(options.body);
+	
+	if(options.body !== undefined) {
+		if(options.body.str) req.write(options.body.str);
+		else req.write(options.body);
+	}
+
 	req.end();
 };
