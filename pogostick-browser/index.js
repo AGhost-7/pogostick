@@ -1,4 +1,4 @@
-var pogo = require('pogostick-protocol');
+var pogo = require('pogostick-proto');
 
 var requestFactory = function(options, cb) {
 	var req = new XMLHttpRequest();
