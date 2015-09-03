@@ -1,7 +1,7 @@
 {
   "name": "pogostick-http",
   "version": "1.0.0",
-  "description": "Implementation of the pogostick protocol for nodeJS https",
+  "description": "Implementation of the pogostick protocol for http",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -22,7 +22,9 @@
   "keywords": [
     "rpc",
     "http",
-    "promise"
+    "promise",
+		"server",
+		"client"
   ],
   "author": "Jonathan Boudreau",
   "license": "MIT",
@@ -37,6 +39,6 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "pogostick-proto": "^1.0.1"
+    "pogostick-proto": "^1.0.3"
   }
 }

@@ -10,4 +10,4 @@ check-dir() {
 
 echo 'Validating modules before committing...'
 check-dir 'pogostick-proto'
-
+check-dir 'pogostick-http'

@@ -19,8 +19,6 @@ module.exports = function(cb) {
 					res.end();
 				});
 			} else {
-				console.log('server writing back:');
-				console.log(result);
 				res.write(result);
 				res.end();
 			}

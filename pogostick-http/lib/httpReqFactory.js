@@ -14,7 +14,6 @@ module.exports = function(options, cb) {
 	});
 	
 	req.on('error', cb);
-	console.log(options);
 	if(options.body !== undefined) {
 		if(options.body.str) req.write(options.body.str);
 		else req.write(options.body);

@@ -55,7 +55,7 @@ function mkRemoteFactory(promiseFactory, requestFactory, options) {
 module.exports = function(promiseFactory, requestFactory, opts) {
 	// clone this just to be on the safe side.
 	var heldOptions = opts ? extend({}, opts) : {};
-	// return a client
+	// return a client factory
 	return function(opts, cb) {
 		// this will be the options object used for all requests for the client instance, in 
 		// part determined by the factory.
