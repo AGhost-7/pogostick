@@ -1,6 +1,6 @@
 {
   "name": "pogostick-http",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Implementation of the pogostick protocol for http",
   "main": "index.js",
   "directories": {
@@ -8,8 +8,7 @@
   },
   "scripts": {
     "lint": "jshint",
-    "test": "mocha",
-    "precommit": "jshint && mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

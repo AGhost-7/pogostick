@@ -14,10 +14,7 @@
   ],
   "scripts": {
     "test": "mocha",
-    "lint": "jshint .",
-    "precommit": "npm run test && npm run lint",
-    "prepublish": "node ../policy.js"
-
+    "lint": "jshint ."
   },
   "main": "index.js",
   "author": "AGhost-7",
