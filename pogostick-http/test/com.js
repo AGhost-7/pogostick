@@ -16,6 +16,8 @@ describe('inter-communication', function() {
 	before(function(done) {
 		srv = mkServer({
 			add: function(a, b) {
+				console.log('received some numbers:');
+				console.log(a, b);
 				return a + b;
 			},
 			multiply: function(a, b) {

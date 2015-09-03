@@ -34,12 +34,14 @@ describe('client', function() {
 		expect(remote.mock).to.not.throw(Error);
 	});	
 
-	it('should foo', function(done) {
+	it('should generate the arguments array', function(done) {
 		response = serializer.res(0,'', 'bar').split('\n');
 		var p = remote.mock('foo');
 			
 		p.then(function(res) {
-			expect(request).to.contain('foo');
+			var args = JSON.parse(request.split('\n')[4]);
+			expect(args).to.contain('foo');
+			expect(args).to.be.an.instanceof(Array);
 			expect(res).to.equal('bar');
 			done();
 		});

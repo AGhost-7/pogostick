@@ -9,7 +9,8 @@ module.exports = function(cb) {
 
 		req.on('end', function(buf) {
 			var msg = str.split('\n');
-			// TODO: Handle errors
+			// The proto module already handles all possible errors, making sure
+			// to catch them.
 			var result = cb(msg);
 			res.writeHead(200);
 			if(typeof result.then === 'function') {
@@ -18,6 +19,8 @@ module.exports = function(cb) {
 					res.end();
 				});
 			} else {
+				console.log('server writing back:');
+				console.log(result);
 				res.write(result);
 				res.end();
 			}

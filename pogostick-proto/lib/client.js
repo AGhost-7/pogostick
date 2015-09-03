@@ -24,7 +24,8 @@ function parseField(val, path, mkSender) {
 function mkRemoteFactory(promiseFactory, requestFactory, options) {
 	return function(path) {
 		return function() {
-			var args = arguments;
+			// the procol requires this to be an array.
+			var args = Array.prototype.slice.call(arguments);
 			return promiseFactory(function(resolve, reject) {
 
 				requestFactory(extend({ body: serializer.call(path, args) }, options), function(err, msg) {
