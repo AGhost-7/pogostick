@@ -16,8 +16,6 @@ describe('inter-communication', function() {
 	before(function(done) {
 		srv = mkServer({
 			add: function(a, b) {
-				console.log('received some numbers:');
-				console.log(a, b);
 				return a + b;
 			},
 			multiply: function(a, b) {
@@ -41,7 +39,6 @@ describe('inter-communication', function() {
 				port: 3000,
 				host: 'localhost'
 			} ,function(err, r) {
-				console.log('connected');
 				if(err) return done(err);
 				remote = r;
 				done();
@@ -52,44 +49,39 @@ describe('inter-communication', function() {
 	});
 
 
-	it('should not give random errors when the network is fine', function(done) {
-		var p = remote.add(1,2);
-		p.finally(done);			
+	it('should not give random errors when the network is fine', function() {
+		return remote.add(1,2);		
 	});
 	
-	it('should return the expected result', function(done) {
-		remote
+	it('should return the expected result', function() {
+		return remote
 			.add(1, 2)
 			.then(function(res) {
 				expect(res).to.equal(3);
-			})
-			.finally(done);
+			});
 	});
 
-	it('should call namespaced functions', function(done) {
-		var p = remote.foo.bar();
-		p
+	it('should call namespaced functions', function() {
+		return remote
+			.foo
+			.bar()
 			.then(function(res) {
 				expect(res).to.equal('foobar');
-			})
-			.finally(done);
+			});
 	});
 
-	it('should return a failed promise if there was an error on the server', function(done){
-		remote
+	it('should return a failed promise if there was an error on the server', function(){
+		return remote
 			.boom()
 			.then(function() {
 				throw 'Boom did not generate an error';
 			}, function() {
 				return 'ok';
-			})
-			.finally(done);
+			});
 	});
 
 	after(function() {
-		console.log('closing...');
 		srv.close();
-		console.log('closed');
 	});
 	
 });
