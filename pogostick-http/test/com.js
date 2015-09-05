@@ -32,8 +32,8 @@ describe('inter-communication', function() {
 			boom: function() {
 				throw new Error('boom');
 			}
-			
 		});
+
 		srv.listen(3000, function(){
 			mkClient({
 				port: 3000,
@@ -43,9 +43,7 @@ describe('inter-communication', function() {
 				remote = r;
 				done();
 			});
-
 		});
-
 	});
 
 
