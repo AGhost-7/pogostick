@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+precommit=npm run precommit
+
+check-dir() {
+	pushd $1 && \
+		npm install	&& \
+		npm run ci && \
+		popd
+}
+
+check-dir 'pogostick-proto' && \
+	check-dir 'pogostick-http' && \
+	check-dir 'pogostick-browser'

@@ -46,6 +46,7 @@ module.exports = function(serverFactory, opts) {
 						} else {
 							return serializer.res(msg[1], msg[2], res);
 						}
+						break;
 							
 					default:
 						var err = { 
