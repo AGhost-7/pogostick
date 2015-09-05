@@ -1,3 +1,4 @@
+/* jshint expr: true */
 
 var 
 	server = require('../lib/server'),
@@ -55,7 +56,7 @@ describe('server', function() {
 		it('should be able to handle arrays', function() {
 			var res = srv(serializer.call('add', [1,2]).str.split('\n'));
 			expect(res).to.contain('3');
-			expect(res).to.not.contains('err');
+			expect(res).to.not.contain('err');
 			expect(res).to.contain('res');
 		});
 
@@ -95,6 +96,13 @@ describe('server', function() {
 			expect(res).to.contain('err');
 			expect(res).to.not.contain('res');
 		});
+
+		it('should give response if request is completely invalid', function() {
+			var res = srv('booya');
+			expect(res).to.exist;
+			expect(res).to.contain('err');
+		});
+
 	});
 
 });

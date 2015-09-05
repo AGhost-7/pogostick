@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "jshint",
     "test": "./test.sh",
-		"browser-test": "mocha-phantomjs ./test/runner.html"
+    "browser-test": "mocha-phantomjs ./test/runner.html"
   },
   "repository": {
     "type": "git",

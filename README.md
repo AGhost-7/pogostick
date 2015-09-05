@@ -1,4 +1,9 @@
+## Pogostick
 Repository containing all `pogostick` modules.
 
-## Todo
+![Alt Text](https://raw.githubusercontent.com/AGhost-7/pogostick/pogo-cat.gif)
+
+### Todo
 - AJAX
+
+
