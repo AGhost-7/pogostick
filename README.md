@@ -1,7 +1,7 @@
-## Pogostick
+## Pogostick ![Build](https://travis-ci.org/AGhost-7/pogostick.svg?branch=master)
 Repository containing all `pogostick` modules.
 
-![Alt Text](https://raw.githubusercontent.com/AGhost-7/pogostick/master/pogo-cat.gif)
+![PogoCat](https://raw.githubusercontent.com/AGhost-7/pogostick/master/pogo-cat.gif)
 
 ### Example
 
