@@ -1,9 +1,10 @@
 var serializer = require('./serializer');
 var extend = require('extend');
+var mkFn = require('mk-fn');
 
 function parseField(val, path, mkSender) {
-	if(val === true) {
-		return mkSender(path);
+	if(typeof val === 'number') {
+		return mkFn(val, mkSender(path));
 	} else if(Array.isArray(val)) {
 		var arr = [];
 		for(var i = 0; i < val.length; i++) {

@@ -1,7 +1,7 @@
 
 var cleanInitField = function(field){
 	if(typeof field === 'function') {
-		return true;
+		return field.length;
 	} else if (typeof field === 'object') {
 		if(Array.isArray(field)) {
 			return field.map(cleanInitField);

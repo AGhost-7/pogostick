@@ -25,19 +25,19 @@ describe('serializer', function() {
 				'init\n' +
 				'0\n' +
 				'\n'  + 
-				'{"add":true}';
+				'{"add":2}';
 			var ser = init(simplMsg)(0, '');
 			ser.should.eql(str);
 		});
 
-		it('should remove numbers', function() {
-			var procs = _.clone(simplMsg);
-			procs.foo = 2;
-			var ser = init(procs)(0,'');
-
-			ser.should.not.contain("2");
-		});
-
+//		it('should remove numbers', function() {
+//			var procs = _.clone(simplMsg);
+//			procs.foo = 2;
+//			var ser = init(procs)(0,'');
+//
+//			ser.should.not.contain("2");
+//		});
+//
 		it('should be able to handle deep funcitons', function() {
 			var procs = _.clone(simplMsg);
 			procs.foo = {

@@ -3,7 +3,7 @@
 # start by linking these buggers. npm install won't remove the links
 
 mkdir pogostick-http/node_modules
-ln -s `pwd`/pogostick-proto pogostick-http/node_modules/pogostick-proto
+ln -s `pwd`/pogostick-proto pogostick-http/node_modules
 mkdir pogostick-browser/node_modules
 ln -s `pwd`/pogostick-http pogostick-browser/node_modules/pogostick-http
 ln -s `pwd`/pogostick-proto pogostick-browser/node_modules/pogostick-proto
