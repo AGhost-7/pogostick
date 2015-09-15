@@ -78,6 +78,12 @@ describe('inter-communication', function() {
 			});
 	});
 
+	it('should have the length property on the methods of properly set', function() {
+		expect(remote.add.length).to.be.equal(2);
+		expect(remote.boom.length).to.be.equal(0);
+	});
+	
+
 	after(function() {
 		srv.close();
 	});
