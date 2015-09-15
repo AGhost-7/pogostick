@@ -42,7 +42,8 @@ describe('server', function() {
 		});
 
 		it('should send an init',function() {
-			expect(this.res).to.contain('init');	
+			expect(this.res).to.contain('init');
+			expect(this.res).to.contain(2);	
 		});
 
 		it('should contain the methods', function() {

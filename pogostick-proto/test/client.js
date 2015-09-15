@@ -19,7 +19,10 @@ var mkClient = client(promiseFactory, clientSpy, {});
 var remote;
 
 before(function(done) {
-	response = serializer.init({mock: function() {} })(Date.now(), '').split('\n');
+	response = serializer.init({
+		mock: function() {},
+		multiArg: function(a, b) {}
+	})(Date.now(), '').split('\n');
 	mkClient({}, function(err, r) {
 		if(err) return done(err);
 		remote = r;
@@ -33,6 +36,11 @@ describe('client', function() {
 		expect(remote.mock).to.exist;
 		expect(remote.mock).to.not.throw(Error);
 	});	
+
+	it('should have the length property of set', function() {
+		expect(remote.mock.length).to.equal(0);
+		expect(remote.multiArg.length).to.equal(2);
+	});
 
 	it('should generate the arguments array', function(done) {
 		response = serializer.res(0,'', 'bar').split('\n');
@@ -61,4 +69,6 @@ describe('client', function() {
 		});
 
 	});
+
+	
 });
