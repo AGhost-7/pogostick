@@ -76,7 +76,7 @@ long with a pseudo-random string is submitted to a maximum length of 10 characte
 the arguments are a valid json array, where each element is an argument to be feed to the procedure 
 call.
 
-Note: All long as there is still a connection, the server must respond.
+Note: As long as there is still a connection, the server must respond.
 
 	call            -> Method Name
 	1439948538953   -> Unix Timestamp
