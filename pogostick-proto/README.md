@@ -1,6 +1,3 @@
-# TODO
-Update the protocol to include the length property for functions. This way you can use curry functionalities and other things which rely on the `length` property.
-
 # Goal
 
 The goal is to have a promises-based, high performance, and transport-agnostic RPC library.
