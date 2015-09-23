@@ -29,6 +29,9 @@ var procs = {
 		boom: function() {
 			throw new Error('BOOM');
 		}
+	},
+	greet: function() {
+		return 'Hello ' + this.name;
 	}
 
 };
@@ -102,6 +105,14 @@ describe('server', function() {
 			var res = srv('booya');
 			expect(res).to.exist;
 			expect(res).to.contain('err');
+		});
+
+		it('passes implicits received to the "this" context', function() {
+			var msg = serializer.call('greet', [], { name: 'ghost' }).str.split('\n');
+			var res = srv(msg);
+			expect(res).to.exist;
+			expect(res).to.contain('ghost');
+
 		});
 
 	});

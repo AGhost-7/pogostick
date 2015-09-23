@@ -84,7 +84,6 @@ function $implicitly(key, value) {
 		impl[k] = this._implicits;
 	}
 	impl[key] = value;
-	
 	return new this.constructor(impl);
 }
 
@@ -133,7 +132,7 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 			
 			Remote.prototype = RemoteProto;
 			Remote.prototype.$implicitly = $implicitly;
-			
+			Remote.prototype.constructor = Remote;
 			cb(null, new Remote({}));	
 		});
 	};

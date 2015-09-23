@@ -75,5 +75,20 @@ describe('client', function() {
 
 	});
 
+	var withName;
+	it('should create a new remote with methods using $implicitly', function() {	
+		withName = remote.$implicitly('name', 'foo');
+		expect(withName.mock).to.exist;
+		expect(withName.mock).to.be.instanceof(Function);
+
+	});
+
+	it('should be able to handle implicits', function() {
+
+		withName.mock();
+		expect(request).to.contain('foo');
+
+	});
+
 	
 });
