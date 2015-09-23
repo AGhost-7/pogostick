@@ -1,48 +1,87 @@
+
+'use strict';
+
 var serializer = require('./serializer');
 var extend = require('extend');
 var mkFn = require('mk-fn');
 
-function parseField(val, path, mkSender) {
+/* This is what is used to travel through the listen sent by the server. */
+function parseField(
+		promiseFactory, 
+		requestFactory, 
+		options, 
+		path,
+		val) {
+	// if its a number, then according to the protocol we have a function.
 	if(typeof val === 'number') {
-		return mkFn(val, mkSender(path));
+		var proc = mkRemoteProc(promiseFactory, requestFactory, options, path);
+		return mkFn(val, proc);
 	} else if(Array.isArray(val)) {
 		var arr = [];
 		for(var i = 0; i < val.length; i++) {
-			arr.push(parseField(val[i], path + '.' + i, mkSender));
+			var parsed = parseField(
+					promiseFactory, 
+					requestFactory, 
+					options, 
+					path + '.' + i,
+					val[i]);
+			arr.push(parsed);
 		}
 		return arr;
 	} else if(typeof val === 'object') {
 		var res = {};
 		for(var key in val) {
 			if(val.hasOwnProperty(key)) {
-				res[key] = parseField(val[key], path + '.' + key, mkSender);
+				var parsedObj = parseField(
+						promiseFactory,
+						requestFactory,
+						options,
+						path + '.' + key,
+						val[key]);
+
+				res[key] = parsedObj;
 			}
 		}
 		return res;
 	}
 }
 
-function mkRemoteFactory(promiseFactory, requestFactory, options) {
-	return function(path) {
-		return function() {
-			// the procol requires this to be an array.
-			var args = Array.prototype.slice.call(arguments);
-			return promiseFactory(function(resolve, reject) {
-
-				requestFactory(extend({ body: serializer.call(path, args) }, options), function(err, msg) {
-					if(err) return reject(err);
-					
-					if(msg[0] === 'err') {
-						// if there is an error, I still need to parse the response
-						// which contains the details on the error.
-						reject(new Error(JSON.parse(msg[3])));
-					} else if(msg[0] === 'res') {
-						resolve(JSON.parse(msg[3]));
-					}	
-				});
+function mkRemoteProc(promiseFactory, requestFactory, options, path) {
+	return function() {
+		// Lazy evaluation is used to handle the caching to keep things optimal.
+		if(this._implicitsCache === undefined) {
+			this._implicitsCache = JSON.parse(this._implicits);
+		}
+		var implicits = this._implicitsCache;
+		// the procol requires this to be an array.
+		var args = Array.prototype.slice.call(arguments);
+		return promiseFactory(function(resolve, reject) {
+			var body = serializer.call(path, args, implicits);
+			var opts = extend({ body: body }, options);
+			requestFactory(opts, function(err, msg) {
+				if(err) return reject(err);
+				
+				if(msg[0] === 'err') {
+					// if there is an error, I still need to parse the response
+					// which contains the details on the error.
+					reject(new Error(JSON.parse(msg[3])));
+				} else if(msg[0] === 'res') {
+					resolve(JSON.parse(msg[3]));
+				}	
 			});
-		};
+		});
 	};
+
+}
+
+/* Creates a new instance with the exact same remote procedures but with a 
+ * change in the implicit object
+ */ 
+function $implicitly(key, value) {
+	var impl = {};
+	impl[key] = value;
+	impl = extend(impl, this._implicits);
+	return new this.constructor(impl);
 }
 
 /* To make this agnostic, I need to use a function which will handle the 
@@ -58,26 +97,40 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 	var heldOptions = opts ? extend({}, opts) : {};
 	// return a client factory
 	return function(opts, cb) {
-		// this will be the options object used for all requests for the client instance, in 
-		// part determined by the factory.
+		// this will be the options object used for all requests for the client 
+		// instance, in part determined by the factory.
 		var defOptions = extend(extend({}, heldOptions), opts);
-		
-		requestFactory(extend({ body: serializer.ls() }, defOptions), function(err, msg) {
+
+		// start by asking the server to list its procedure which we can use.
+		var initOpts = extend({ body: serializer.ls() }, defOptions);
+		requestFactory(initOpts, function(err, msg) {
 			if(err) return cb(err);
 
-			var client = {};
 			var listing;
 			try {
 				listing = JSON.parse(msg[3]);
 			} catch(er) {
 				return cb(new Error('JSON parser error: ' + er.message));
 			}
-			var remoteProducer = mkRemoteFactory(promiseFactory, requestFactory, defOptions);
-			var remote = Object.keys(listing).reduce(function(accu, key) {
-				accu[key] = parseField(listing[key], key, remoteProducer);
-				return accu;
-			}, {});
-			cb(null, remote);	
+			
+			var Remote = function(impl) {
+				this._implicits = impl;
+			};
+
+			var RemoteProto = Object.create(null);
+			for(var key in listing) {
+				RemoteProto[key] = parseField(
+						promiseFactory,
+						requestFactory,
+						defOptions,
+						key,
+						listing[key]);
+			}
+			
+			Remote.prototype = RemoteProto;
+			Remote.prototype.$implicitly = $implicitly;
+			
+			cb(null, new Remote({}));	
 		});
 	};
 };

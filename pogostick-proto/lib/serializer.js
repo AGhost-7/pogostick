@@ -1,3 +1,4 @@
+'use strict';
 
 var cleanInitField = function(field){
 	if(typeof field === 'function') {
@@ -90,7 +91,7 @@ module.exports = {
 	 *
 	 * Sender: Client; Receiver: Server
 	 */ 
-	call: function(path, args) {
+	call: function(path, args, implicits) {
 		var rand = randString();
 		var stamp = Date.now();
 		return {
@@ -101,7 +102,8 @@ module.exports = {
 				stamp,
 				rand,
 				path,
-				JSON.stringify(args)
+				JSON.stringify(args),
+				implicits ? JSON.stringify(implicits) : ''
 			].join('\n')
 		};
 	},

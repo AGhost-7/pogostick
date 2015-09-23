@@ -16,25 +16,30 @@ var clientSpy = function(opts, cb) {
 };
 
 var mkClient = client(promiseFactory, clientSpy, {});
-var remote;
-
-before(function(done) {
-	response = serializer.init({
-		mock: function() {},
-		multiArg: function(a, b) {}
-	})(Date.now(), '').split('\n');
-	mkClient({}, function(err, r) {
-		if(err) return done(err);
-		remote = r;
-		done();
-	});
-});
 
 describe('client', function() {
-	
+
+	var remote;
+
+	it('creates a remote object', function(done) {
+		response = serializer.init({
+			mock: function() {},
+			multiArg: function(a, b) {}
+		})(Date.now(), '').split('\n');
+		
+		mkClient({}, function(err, r) {
+			expect(err).to.not.exist;
+			expect(r).to.exist;
+
+			remote = r;
+			done();
+		});
+	});
+
 	it('should have methods properly initialized', function() {
 		expect(remote.mock).to.exist;
-		expect(remote.mock).to.not.throw(Error);
+		expect(remote.mock).to.be.instanceof(Function);
+//		expect(remote.mock).to.not.throw(Error);
 	});	
 
 	it('should have the length property of set', function() {
@@ -42,11 +47,12 @@ describe('client', function() {
 		expect(remote.multiArg.length).to.equal(2);
 	});
 
-	it('should generate the arguments array', function(done) {
+
+	it('should generate the arguments array', function() {
 		response = serializer.res(0,'', 'bar').split('\n');
 		var p = remote.mock('foo');
 			
-		p.then(function(res) {
+		return p.then(function(res) {
 			var args = JSON.parse(request.split('\n')[4]);
 			expect(args).to.contain('foo');
 			expect(args).to.be.an.instanceof(Array);

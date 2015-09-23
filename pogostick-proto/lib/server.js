@@ -1,13 +1,17 @@
+
+'use strict';
+
 var extend = require('extend');
 var serializer = require('./serializer');
 
 
-function notExist(procName) {
-	return serializer.err(msg[1], msg[2], new Error('Procedure ' + msg[3] + ' does not exist'));
+function notExist(msg) {
+	return serializer
+	.err(msg[1], msg[2], new Error('Procedure ' + msg[3] + ' does not exist'));
 }
 
-/* Creates a server instance which will send its results. The protocol doesn't take
- * care of this, but procnet will manage connecting to other servers.
+/* Creates a server instance which will send its results. The protocol doesn't 
+ * take care of this, but procnet will manage connecting to other servers.
  */
 module.exports = function(serverFactory, opts) {
 	var defOpts = extend({}, opts);
@@ -29,13 +33,15 @@ module.exports = function(serverFactory, opts) {
 								return obj[key];
 							}, procs);
 						} catch(err) {
-							return notExist(msg[3]);
+							return notExist(msg);
 						}
 						if(proc === undefined) {
-							return notExist(msg[3]);
+							return notExist(msg);
 						}
 
-						var res = proc.apply(null, JSON.parse(msg[4]));
+						var implicits = msg[5] ? JSON.parse(msg[5]) : {};
+
+						var res = proc.apply(implicits, JSON.parse(msg[4]));
 						// the value returned can either be a promise or regular value. 
 						if(res.then) {
 							return res.then(function(res) {
