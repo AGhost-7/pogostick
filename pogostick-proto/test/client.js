@@ -57,7 +57,6 @@ describe('client', function() {
 			expect(args).to.contain('foo');
 			expect(args).to.be.an.instanceof(Array);
 			expect(res).to.equal('bar');
-			done();
 		});
 	});
 

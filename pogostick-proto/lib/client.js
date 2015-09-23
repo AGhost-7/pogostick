@@ -47,11 +47,12 @@ function parseField(
 }
 
 function mkRemoteProc(promiseFactory, requestFactory, options, path) {
-	return function() {
+	return function() {		
 		// Lazy evaluation is used to handle the caching to keep things optimal.
 		if(this._implicitsCache === undefined) {
-			this._implicitsCache = JSON.parse(this._implicits);
+			this._implicitsCache = JSON.stringify(this._implicits);
 		}
+
 		var implicits = this._implicitsCache;
 		// the procol requires this to be an array.
 		var args = Array.prototype.slice.call(arguments);
@@ -75,12 +76,15 @@ function mkRemoteProc(promiseFactory, requestFactory, options, path) {
 }
 
 /* Creates a new instance with the exact same remote procedures but with a 
- * change in the implicit object
+ * change in the implicit object.
  */ 
 function $implicitly(key, value) {
 	var impl = {};
+	for(var k in this._implicits) {
+		impl[k] = this._implicits;
+	}
 	impl[key] = value;
-	impl = extend(impl, this._implicits);
+	
 	return new this.constructor(impl);
 }
 
