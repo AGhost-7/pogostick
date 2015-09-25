@@ -5,7 +5,7 @@ Repository containing all `pogostick` modules.
 
 ### Example
 
-Server:
+Http Server:
 ```javascript
 var pogo = require('pogostick-http');
 
@@ -30,17 +30,17 @@ var server = mkServer({
 server.listen(3003);
 ```
 
-Browser Client:
+Http Browser Client:
 ```javascript
 var pogo = require('pogostick-browser');
 var Promise = require('bluebird');
 // You can use any promises library as long as it stays true to the Promise/A+ spec.
 var promiseFactory = function(resolver) { return new Promise(resolver); };
 var mkClient = pogo(promiseFactory, {
-	port: 3003
+	host: 'localhost'
 });
 
-mkClient(function(err, remote) {
+mkClient({ port: 3003 }, function(err, remote) {
 	if(err) return console.log('there was an error loading the remote');
 	Promise.all([
 		remote.add(2, 4),

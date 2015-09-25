@@ -3,7 +3,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var http = require('http');
-var httpReqFactory = require('../lib/httpReqFactory');
+var httpReqFactory = require('../lib/reqFactory').http;
 
 var server;
 before(function(done){

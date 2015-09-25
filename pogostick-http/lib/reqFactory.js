@@ -1,7 +1,9 @@
 
+'use strict';
+
 var extend = require('extend');
 
-module.exports = function(http) {
+function mkReqFactory(http) {
 	return function(options, cb) {
 
 		var req = http.request(extend({ method: 'POST' }, options), function(res) {
@@ -22,4 +24,11 @@ module.exports = function(http) {
 
 		req.end();
 	};
+}
+
+var http = require('http');
+var https = require('https');
+module.exports = {
+	http: mkReqFactory(http),
+	https: mkReqFactory(https)
 };

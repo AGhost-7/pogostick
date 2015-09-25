@@ -1,6 +1,8 @@
+'use strict';
+
 var extend = require('extend');
 
-module.exports = function (http) {
+function mkReqFactory(http) {
 	return function(cb, options) {
 		return http.createServer(function(req, res) {
 			var str = '';
@@ -26,4 +28,11 @@ module.exports = function (http) {
 			});
 		});
 	};
+}
+
+var http = require('http');
+var https = require('https');
+module.exports = {
+	http: mkReqFactory(http),
+	https: mkReqFactory(https)
 };
