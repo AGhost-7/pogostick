@@ -96,11 +96,25 @@ parameters. These were implemented to make it possible to pass authentication
 tokens and such into remote procedures without having to specify them every 
 time. So here's an example:
 
+Server:
+```javascript
+...
+mkServer({
+	greet: function() {
+		// You access the implicit values sent by the client through the "this"
+		// keyword.
+		return "hello " + this.name + "!";
+	}
+});
+...
+```
+
 Client:
 ```javascript
 mkClient(function(err, remote) {
 	if(err) return console.log('there was an error loading the remote');
 	var withName = remote.$implicitly('name', 'AGhost-7');
+	// Using withName, you will automatically send "AGhost-7" to the server.
 	withName
 		.greet()
 		.then(console.log.bind(console));
@@ -116,7 +130,7 @@ created when it is not.
 var fs = require('fs');
 var Q = require('q');
 var p = Q.promise(function(resolve, reject) {
-	fs.readFile('/etc/dkms', funciton(err, buf) {
+	fs.readFile('/etc/dkms', function(err, buf) {
 		err ? reject(err) : resolve(buf.toString());
 	});
 });
