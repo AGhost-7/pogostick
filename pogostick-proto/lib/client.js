@@ -105,7 +105,14 @@ function mkRemoteProc(
 					case 'exit':
 						// all functions will now return a rejected promise.
 						state.isEnded = true;
-						events.end(msg[1], msg[2], msg[3]);
+						var exitReason;
+						if(msg[3] !== undefined) {
+							try {
+								exitReason = JSON.parse(msg[3]);
+							} catch(err) {}
+						}
+						events.exit(msg[1], msg[2], exitReason);
+						events.end(msg[1], msg[2], exitReason);
 						break;
 					case 'err':
 						var res;
