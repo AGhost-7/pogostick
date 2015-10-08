@@ -5,24 +5,29 @@ var serializer = require('../lib/serializer');
 var Promise = require('bluebird');
 var expect = require('chai').expect;
 
-var promiseFactory = function(resolver) { return new Promise(resolver); };
+var promise = function(resolver) { return new Promise(resolver); };
 
-var response;
-var request;
-// this is our "network layer" implementation.
-var clientSpy = function(opts, cb) {
-	request = opts.body.str ? opts.body.str : opts.body;
-	cb(null, response);
-};
+function createSpy() {
+	var spy;
+ 
+	spy	= function(opts, cb){
+		spy.request = opts.body.str ? opts.body.str : opts.body;
+		cb(null, spy.response);
+	};
 
-var mkClient = client(promiseFactory, clientSpy, {});
+	return spy;
+}
+
+var spy = createSpy();
+
+var mkClient = client(promise, spy, {});
 
 describe('client', function() {
 
 	var remote;
 
 	it('creates a remote object', function(done) {
-		response = serializer.init({
+		spy.response = serializer.init({
 			mock: function() {},
 			multiArg: function(a, b) {}
 		})(Date.now(), '').split('\n');
@@ -49,11 +54,11 @@ describe('client', function() {
 
 
 	it('should generate the arguments array', function() {
-		response = serializer.res(0,'', 'bar').split('\n');
+		spy.response = serializer.res(0,'', 'bar').split('\n');
 		var p = remote.mock('foo');
 			
 		return p.then(function(res) {
-			var args = JSON.parse(request.split('\n')[4]);
+			var args = JSON.parse(spy.request.split('\n')[4]);
 			expect(args).to.contain('foo');
 			expect(args).to.be.an.instanceof(Array);
 			expect(res).to.equal('bar');
@@ -61,7 +66,7 @@ describe('client', function() {
 	});
 
 	it('should be able to handle deep functions', function(done) {
-		response = serializer.init({
+		spy.response = serializer.init({
 			foo: {
 				bar: function() {}
 			}
@@ -75,20 +80,51 @@ describe('client', function() {
 
 	});
 
-	var withName;
-	it('should create a new remote with methods using $implicitly', function() {	
-		withName = remote.$implicitly('name', 'foo');
-		expect(withName.mock).to.exist;
-		expect(withName.mock).to.be.instanceof(Function);
+	describe('implicits', function() {
+		var withName;
+		it('should create a new remote with methods using $implicitly', function() {	
+			withName = remote.$implicitly('name', 'foo');
+			expect(withName.mock).to.exist;
+			expect(withName.mock).to.be.instanceof(Function);
+		});
 
+		it('should be able to send the implicits', function() {
+			withName.mock();
+			expect(spy.request).to.contain('foo');
+		});
 	});
 
-	it('should be able to handle implicits', function() {
+	describe('closable', function() {
+		var wasClosed = false;
+		var wasExit = false;
+		var remote;
 
-		withName.mock();
-		expect(request).to.contain('foo');
+		before(function(done) {
+			spy.response = serializer.init({
+				mock: function() {}
+			})(Date.now(), '').split('\n');
 
+			mkClient({
+				on: {
+					end: function() { wasClosed = true; },
+					exit: function() { wasExit = true; }
+				}
+			}, function(err, rem) {
+				console.log(err, rem.mock);
+				remote = rem;
+				done(err);
+			});
+		});
+
+		it('should revent the procedures from sending requests', function() {
+			spy.request = undefined;
+			remote.$end();
+			remote.mock().then(function(){}, function(){});
+			expect(spy.request).to.equal(undefined);
+		});
+		
+		it('should trigger events on close', function() {
+			expect(wasClosed).to.be.true;
+		});
 	});
-
-	
 });

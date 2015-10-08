@@ -81,7 +81,7 @@ function mkRemoteProc(
 		if(state.isEnded) {
 			// TODO: what kind of error should this be?
 			return promiseFactory(function(resolve, reject) {
-				return reject(undefined);
+				return reject(new Error('Connection is closed'));
 			});
 		}
 
@@ -150,6 +150,9 @@ function $implicitly(key, value) {
 	return new this.constructor(impl);
 }
 
+/* Generates a class from the procedure listing call to the server which will 
+ * be our remote.
+ */ 
 function createRemoteClass(promiseFactory, requestFactory, listing, options) {
 	// At this stage, I don't have much of a choice to add mutable state. If
 	// the remote has been closed at the protocol-level, they need to change 
@@ -189,7 +192,7 @@ function createRemoteClass(promiseFactory, requestFactory, listing, options) {
 	
 	// I need to externalize the `end` handler since in some situation the end
 	// will be protocol specific, e.g., tcp streams (persistent connections).
-	Remote.prototype._end = function() {
+	Remote.prototype.$end = function() {
 		state.isEnded = true;
 		if(typeof events.end === 'function') {
 			events.end.apply(this, arguments);
