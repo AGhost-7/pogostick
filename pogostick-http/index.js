@@ -1,6 +1,7 @@
 /* global require,module */
 'use strict';
 
+var pogot = require('pogostick-protocol');
 var serverFactory = require('./lib/serverFactory');
 var reqFactory = require('./lib/reqFactory');
 
@@ -20,5 +21,6 @@ module.exports = {
 		server: function(options) {
 			return pogo.server(serverFactory.https, options);
 		}
-	}
+	},
+	exit: pogo.exit
 };
