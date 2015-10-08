@@ -45,10 +45,10 @@ var whenMkClient = pogo.client(when.promise);
 ```
 
 ### Implicit Parameters
-Implicit parameters in Pogostick are inspired by [Scala][1] implicit 
-parameters. These were implemented to make it possible to pass authentication
-tokens and such into remote procedures without having to specify them every 
-time. So here's an example:
+Implicit parameters in Pogostick are inspired by Scala implicit parameters. 
+These were implemented to make it possible to pass authentication tokens and 
+such into remote procedures without having to specify them every time. So,
+here's an example:
 
 Server:
 ```javascript

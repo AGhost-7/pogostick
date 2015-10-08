@@ -1,6 +1,6 @@
 {
   "name": "pogostick-http",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Implementation of the pogostick protocol for http",
   "main": "index.js",
   "directories": {
@@ -37,6 +37,6 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "pogostick-proto": "^1.1.3"
+    "pogostick-proto": "^1.1.6"
   }
 }

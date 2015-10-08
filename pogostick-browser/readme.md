@@ -76,10 +76,10 @@ var whenMkClient = pogo.client(when.promise);
 ```
 
 ### Implicit Parameters
-Implicit parameters in Pogostick are inspired by [Scala][1] implicit 
-parameters. These were implemented to make it possible to pass authentication
-tokens and such into remote procedures without having to specify them every 
-time. So here's an example:
+Implicit parameters in Pogostick are inspired by Scala implicit parameters. 
+These were implemented to make it possible to pass authentication tokens and 
+such into remote procedures without having to specify them every time. So,
+here's an example:
 
 Server:
 ```javascript
@@ -111,21 +111,31 @@ The client in this case will print to the console `Hello AGhost-7`.
 
 
 
-## Module Types
-`promiseFactory` is a function which accepts a resolver function and returns
-a promise. It is bundled in most promise libaries and can usually be easily
-created when it is not.
+module-types
+
+## The Remote Object
+The remote object contains all procedures that the server has listed, allowing
+you to call the functions from the network. There are two additional methods
+which are added to the remote object.
+
+### `$end()`
+Prevents the procedures on the remote from sending any more requests to the 
+server. This is called internally in some cases.
 
 ```javascript
-var fs = require('fs');
-var Q = require('q');
-var p = Q.promise(function(resolve, reject) {
-	fs.readFile('/etc/dkms', function(err, buf) {
-		err ? reject(err) : resolve(buf.toString());
-	});
-});
-p.then(console.log.bind(console));
+// returns a resolved promise if there was no error
+remote.foo(); 
+// Close the remote
+remote.$end();
+// skips fetching to the server and will just return a rejected promise
+remote.foo();
 ```
+
+## `$implicitly(key, value)`
+Returns a new remote instance which will send the data to the server each time
+you call the procedures on it.
+
+
 
 ## Module Functions
 

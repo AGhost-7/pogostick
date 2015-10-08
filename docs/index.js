@@ -9,7 +9,9 @@ var slurp = function(file) {
 
 // Define global files to reference from the main readmes.
 var files = [
-	'features'
+	'features',
+	'remote',
+	'module-types'
 ];
 
 var data = _.reduce(files, function(accu, filename) {
