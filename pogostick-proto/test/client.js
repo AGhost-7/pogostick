@@ -110,7 +110,6 @@ describe('client', function() {
 					exit: function() { wasExit = true; }
 				}
 			}, function(err, rem) {
-				console.log(err, rem.mock);
 				remote = rem;
 				done(err);
 			});

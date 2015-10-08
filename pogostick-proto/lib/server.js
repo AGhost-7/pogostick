@@ -4,6 +4,50 @@
 var extend = require('extend');
 var serializer = require('./serializer');
 
+var Exit = require('./exit');
+
+function processCall(procs, msg) {
+	var proc;
+	try {
+		proc = msg[3].split('.').reduce(function(obj, key) {
+			return obj[key];
+		}, procs);
+	} catch(err) {
+		return notExist(msg);
+	}
+	if(proc === undefined) {
+		return notExist(msg);
+	}
+
+	var implicits = msg[5] ? JSON.parse(msg[5]) : {};
+	var res;
+	try {
+		res = proc.apply(implicits, JSON.parse(msg[4]));
+	} catch(err) {
+		return serializer.err(msg[1], msg[2], err.message);
+	}
+
+	// the value returned can either be a promise or regular value. 
+	if(typeof res.then === 'function') {
+		return res.then(function(res) {
+			if(res instanceof Exit) {
+				return serializer.exit(msg[1], msg[2], res.message);
+			} else {
+				return serializer.res(msg[1], msg[2], res);
+			}
+			
+		}, function(err) {
+			// I dont think it would make sense for the user to send the Exit object
+			// as a rejected promise, so don't process it here.
+			return serializer.err(msg[1], msg[2], err);
+		});
+	} else if(res instanceof Exit) {
+		return serializer.exit(msg[1], msg[2], res.message);
+	} else {
+		return serializer.res(msg[1], msg[2], res);
+	}
+
+}
 
 function notExist(msg) {
 	return serializer
@@ -27,32 +71,7 @@ module.exports = function(serverFactory, opts) {
 						return procsInit(msg[1], msg[2]);
 
 					case 'call':
-						var proc;
-						try {
-							proc = msg[3].split('.').reduce(function(obj, key) {
-								return obj[key];
-							}, procs);
-						} catch(err) {
-							return notExist(msg);
-						}
-						if(proc === undefined) {
-							return notExist(msg);
-						}
-
-						var implicits = msg[5] ? JSON.parse(msg[5]) : {};
-
-						var res = proc.apply(implicits, JSON.parse(msg[4]));
-						// the value returned can either be a promise or regular value. 
-						if(res.then) {
-							return res.then(function(res) {
-								return serializer.res(msg[1], msg[2], res);
-							}, function(err) {
-								return serializer.err(msg[1], msg[2], err);
-							});
-						} else {
-							return serializer.res(msg[1], msg[2], res);
-						}
-						break;
+						return processCall(procs, msg);
 							
 					default:
 						var err = { 
@@ -63,10 +82,13 @@ module.exports = function(serverFactory, opts) {
 
 				}	
 			} catch(err) {
-				return serializer.err(msg[1], msg[2], err);
+				return serializer.err(msg[1], msg[2], err.message);
 			}
 			
 		};
 		return serverFactory(processRequest, options);
 	};
 };
+
+
+

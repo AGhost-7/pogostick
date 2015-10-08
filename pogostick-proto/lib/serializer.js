@@ -144,7 +144,7 @@ module.exports = {
 	 *
 	 * Sender: Server; Receiver: Client
 	 */
-	exit: function(err, stamp, randStr) {
+	exit: function(stamp, randStr, err) {
 		if(arguments.length === 3) {
 			return [
 				'err',
