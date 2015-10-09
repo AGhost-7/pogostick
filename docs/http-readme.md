@@ -76,5 +76,26 @@ Similar to `server(options` with two additional options.
 - `cert`, the ssl certificate.
 - `key`, which is the encryption key.
 
+### `exit([message])`
+This tells the client that the server is no longer available. The client 
+implementation will stop its connection and the remotes will no longer send
+requests, only returning rejected promises. Triggers the `end` and `exit` 
+event.
+
+```javascript
+var pogo = require('pogostick-http');
+...
+mkServer({
+	divide: function(a, b) {
+		if(b === 0) {
+			return pogo.exit();
+		} else {
+			return a / b;
+		}
+	}
+});
+...
+```
+
 [1]: https://nodejs.org/api/http.html#http_http_request_options_callback
 [2]: https://nodejs.org/api/https.html#https_https_request_options_callback
