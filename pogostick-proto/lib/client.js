@@ -1,14 +1,5 @@
 
 'use strict';
-// TODO:
-// - Implement `exit` event handler. This is protocol-level.
-// - Implement `end` event handler? Needs to be implemented at the protcol
-// and at the transport, for streams/tcp, etc (persistent connections).
-// - Implement `error` event handler. Since all errors are passed from the
-// transport to the protocol module, I can implement this from the protocol
-// module no problem.
-//
-//
 
 var serializer = require('./serializer');
 var extend = require('extend');
@@ -79,7 +70,6 @@ function mkRemoteProc(
 		path) {
 	return function() {
 		if(state.isEnded) {
-			// TODO: what kind of error should this be?
 			return promiseFactory(function(resolve, reject) {
 				return reject(new Error('Connection is closed'));
 			});
