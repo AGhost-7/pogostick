@@ -1,6 +1,6 @@
 {
   "name": "pogostick-proto",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Pogostick protocol functions",
   "repository": {
     "type": "git",

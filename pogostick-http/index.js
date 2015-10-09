@@ -1,7 +1,7 @@
 /* global require,module */
 'use strict';
 
-var pogot = require('pogostick-protocol');
+var pogot = require('pogostick-proto');
 var serverFactory = require('./lib/serverFactory');
 var reqFactory = require('./lib/reqFactory');
 
