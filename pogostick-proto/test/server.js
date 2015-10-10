@@ -102,7 +102,7 @@ describe('server', function() {
 		});
 
 		it('should give response if request is completely invalid', function() {
-			var res = srv('booya');
+			var res = srv(['booya']);
 			expect(res).to.exist;
 			expect(res).to.contain('err');
 		});
