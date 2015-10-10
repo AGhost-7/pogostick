@@ -3,9 +3,10 @@
   "version": "0.5.6",
   "description": "Implementation of the pogostick protocol for http, in the browser.",
   "scripts": {
-		"ci": "npm run lint && npm run test",
+    "ci": "npm run lint && npm run test",
     "lint": "jshint",
-    "test": "./test.sh"
+    "test": "./test.sh",
+    "dist": "browserify -g uglifyify ./index.js --debug | exorcist dist/pogostick.js.map > dist/pogostick.js"
   },
   "repository": {
     "type": "git",
@@ -28,11 +29,13 @@
     "bluebird": "^2.9.34",
     "browserify": "^11.0.1",
     "chai": "^3.2.0",
+    "exorcist": "^0.4.0",
     "jshint": "^2.8.0",
     "mocha": "^2.3.0",
     "mocha-phantomjs": "^3.6.0",
     "phantomjs": "1.9.7-15",
-    "pogostick-http": "^1.2.0"
+    "pogostick-http": "^1.2.0",
+    "uglifyify": "^3.0.1"
   },
   "dependencies": {
     "extend": "^3.0.0",
