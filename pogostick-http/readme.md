@@ -5,7 +5,8 @@ This is the implementation of the Pogostick protocol for http.
 ## Introductory Example
 
 ```javascript
-// Use whichever promise library you want, as long as it follows Promises/A+ spec.
+// Use whichever promise library you want, as long as it follows Promises/A+ 
+// spec.
 var Promise = require('bluebird');
 var pogo = require('pogostick-http');
 var mkServer = pogo.server({
@@ -17,7 +18,8 @@ var server = mkServer({
 		return 1 + 2;
 	},
 	// You can also return promises and it will return only the result contained
-	// within it. If the promise is rejected, it will also be rejected on the client.
+	// within it. If the promise is rejected, it will also be rejected on the 
+	// client.
 	delayedGreet: function(name) {
 		return new Promise(function(resolve) {
 			setTimeout(function() { 
@@ -126,7 +128,22 @@ The client in this case will print to the console `Hello AGhost-7`.
 
 
 
-module-types
+## Module Types
+`promiseFactory` is a function which accepts a resolver function and returns
+a promise. It is bundled in most promise libaries and can usually be easily
+created when it is not.
+
+```javascript
+var fs = require('fs');
+var Q = require('q');
+var p = Q.promise(function(resolve, reject) {
+	fs.readFile('/etc/dkms', function(err, buf) {
+		err ? reject(err) : resolve(buf.toString());
+	});
+});
+p.then(console.log.bind(console));
+```
+
 
 ## The Remote Object
 The remote object contains all procedures that the server has listed, allowing
@@ -152,6 +169,29 @@ you call the procedures on it.
 
 
 
+## Client Events
+
+### `error`
+The error event is triggered whenever the client receives and `err` message
+back from the server. Essentially, whenever the remote object returns a 
+rejected promise.
+
+This can be useful if you want to catch certain connection errors. For example,
+you may want to give GUI feedback if you can't connect to the server because
+there is no connection.
+
+### `exit`
+This is a response that the server can send to the client to terminate any
+more requests. This will cause the remote to stop sending requests, and simply
+return rejected promises every time.
+
+### `end`
+Called at any time the remote is no longer capable of sending requests. For the
+http implementations, this is only the case when the server sends a `exit` 
+response. For persistent connections such as TCP, the `end` event is triggered
+whenever the connection is lost as well.
+
+
 ## Module Functions
 
 ### `client(promiseFactory)`
@@ -161,22 +201,70 @@ a complete handler to.
 The options are passed to the underlying native nodeJS [http][1] module, giving
 the options such as `port` and `host`.
 
+You also have access to the `on` option, which alows you to specify event 
+handlers.
+
 ### `https.client(promiseFactory)`
 Returns a client generating function similar to `client(promiseFactory)`. Just
 like `client(promiseFactory)`, the options are passed to the underlying native
-nodeJs module, this time [https][2].
+nodeJs module, this time [https][2]. There is also the `on` option, which list
+events you can listen to.
+
+```javascript
+var mkClient = pogo.client(promise);
+var options = {
+	host: 'localhost',
+	port: 3000,
+	on: {
+		end: function() {
+			console.log('Connection was ended');
+		},
+		error: function(err) {
+			if(err.code === 'ECONNREFUSED') {
+				console.log('could not connect to server!');
+			}
+		}
+	}
+};
+
+mkClient(options, function(err, remote) {
+	...
+});
+```
 
 ### `server(options)`
 Accepts the default options and returns a server instantiation function. Each
 server instance will inherit the inital options specified in the function.
 
 The options are the following:
-- `headers` specifies which headers t send out in each request.
+- `headers` specifies which headers to send out in each request.
 
 ### `https.server(options)`
 Similar to `server(options` with two additional options.
 - `cert`, the ssl certificate.
 - `key`, which is the encryption key.
+
+### `exit([message])`
+This tells the client that the server is no longer available. The client 
+implementation will stop its connection and the remotes will no longer send
+requests, only returning rejected promises. Triggers the `end` and `exit` 
+event.
+
+```javascript
+var pogo = require('pogostick-http');
+...
+mkServer({
+	divide: function(a, b) {
+		if(b === 0) {
+			// The `message` argument is optional.
+			return pogo.exit();
+		} else {
+			return a / b;
+		}
+	}
+});
+...
+```
 
 [1]: https://nodejs.org/api/http.html#http_http_request_options_callback
 [2]: https://nodejs.org/api/https.html#https_https_request_options_callback

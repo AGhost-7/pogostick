@@ -82,3 +82,8 @@ var server = mkServer({
 The client in this case will print to the console `Hello AGhost-7`.
 
 [1]: http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
+
+### TODOs
+- Add debugging without the overhead. Look into the possibility of using 
+sweetjs node loader to have this working.
+- Stream-based implementation

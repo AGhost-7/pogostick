@@ -1,7 +1,7 @@
 {
   "name": "pogostick-http",
-  "version": "1.2.5",
-  "description": "Implementation of the pogostick protocol for http",
+  "version": "1.2.6",
+  "description": "Implementation of the pogostick protocol for http.",
   "main": "index.js",
   "directories": {
     "test": "mocha"
@@ -15,7 +15,12 @@
 		"type": "git",
 		"url": "git+https://github.com/AGhost-7/pogostick.git"
 	},
-  
+  "contributors": [
+		{
+			"name": "Jonathan Boudreau",
+			"email": "jonathan.boudreau.92@gmail.com"
+		}
+	],
 	"keywords": [
 		"rpc",
 		"http",
@@ -37,6 +42,6 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "pogostick-proto": "^1.1.7"
+    "pogostick-proto": "^1.2.8"
   }
 }

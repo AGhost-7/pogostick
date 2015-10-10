@@ -90,7 +90,12 @@ function mkRemoteProc(
 			var body = serializer.call(path, args, implicits);
 			var opts = extend({ body: body }, options);
 			requestFactory(opts, function(err, msg) {
-				if(err) return reject(err);
+				if(err) {
+					reject(err);
+					if(events.broadcastError) events.error(err);
+					return;
+				}
+
 				switch(msg[0]) {
 					case 'exit':
 						// all functions will now return a rejected promise.

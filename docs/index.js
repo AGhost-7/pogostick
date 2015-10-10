@@ -11,7 +11,8 @@ var slurp = function(file) {
 var files = [
 	'features',
 	'remote',
-	'module-types'
+	'types',
+	'events'
 ];
 
 var data = _.reduce(files, function(accu, filename) {

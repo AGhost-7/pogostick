@@ -1,6 +1,6 @@
 {
   "name": "pogostick-proto",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Pogostick protocol functions",
   "repository": {
     "type": "git",
@@ -38,10 +38,5 @@
   "dependencies": {
     "extend": "^3.0.0",
     "mk-fn": "^1.0.0"
-  },
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test"
-  ]
+  }
 }

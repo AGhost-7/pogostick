@@ -4,7 +4,7 @@ This is an ajax client for the pogostick protocol. The interface is the exact
 same as the client in `pogostick-http`.
 
 Unfortunately, there isn't really a way to create an ajax server. It is
-possible that I could use a different api to get this done.
+possible that I could use a different web API to get this done.
 
 ## Introductory Example
 
@@ -15,10 +15,19 @@ var pogo = require('pogostick-browser');
 
 // you need to pass to the client constructor a function which generates
 // promise instances.
-var promiseFactory = function(resolver) { return new Promise(resolver); };
-var mkClient = pogo(promiseFactory, { host: 'localhost' });
+var promise = function(resolver) { return new Promise(resolver); };
+var mkClient = pogo(promise, { host: 'localhost' });
 
-mkClient({ port: 3000 }, function(err, remote) {
+var options = {
+	port: 3000,
+	on: {
+		end: function() {
+			alert('Connection was lost!');
+		}
+	}
+};
+
+mkClient(options, function(err, remote) {
 	Promise.all([
 		remote.add(1, 2),
 		remote.delayedGreet()
@@ -111,7 +120,22 @@ The client in this case will print to the console `Hello AGhost-7`.
 
 
 
-module-types
+## Module Types
+`promiseFactory` is a function which accepts a resolver function and returns
+a promise. It is bundled in most promise libaries and can usually be easily
+created when it is not.
+
+```javascript
+var fs = require('fs');
+var Q = require('q');
+var p = Q.promise(function(resolve, reject) {
+	fs.readFile('/etc/dkms', function(err, buf) {
+		err ? reject(err) : resolve(buf.toString());
+	});
+});
+p.then(console.log.bind(console));
+```
+
 
 ## The Remote Object
 The remote object contains all procedures that the server has listed, allowing
@@ -137,6 +161,29 @@ you call the procedures on it.
 
 
 
+## Client Events
+
+### `error`
+The error event is triggered whenever the client receives and `err` message
+back from the server. Essentially, whenever the remote object returns a 
+rejected promise.
+
+This can be useful if you want to catch certain connection errors. For example,
+you may want to give GUI feedback if you can't connect to the server because
+there is no connection.
+
+### `exit`
+This is a response that the server can send to the client to terminate any
+more requests. This will cause the remote to stop sending requests, and simply
+return rejected promises every time.
+
+### `end`
+Called at any time the remote is no longer capable of sending requests. For the
+http implementations, this is only the case when the server sends a `exit` 
+response. For persistent connections such as TCP, the `end` event is triggered
+whenever the connection is lost as well.
+
+
 ## Module Functions
 
 ### `(promiseFactory, options)`
@@ -152,4 +199,4 @@ HTTP request, you can specify this property which is an object where the key
 is the HTTP header name and the value is what you want the header to be set to.
 - `method`: Defaults to `POST`. Specifies which HTTP method to use for the 
 requests.
-
+- `on`: This option allows you to specify what events you wish to listen to.

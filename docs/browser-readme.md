@@ -4,7 +4,7 @@ This is an ajax client for the pogostick protocol. The interface is the exact
 same as the client in `pogostick-http`.
 
 Unfortunately, there isn't really a way to create an ajax server. It is
-possible that I could use a different api to get this done.
+possible that I could use a different web API to get this done.
 
 ## Introductory Example
 
@@ -15,10 +15,19 @@ var pogo = require('pogostick-browser');
 
 // you need to pass to the client constructor a function which generates
 // promise instances.
-var promiseFactory = function(resolver) { return new Promise(resolver); };
-var mkClient = pogo(promiseFactory, { host: 'localhost' });
+var promise = function(resolver) { return new Promise(resolver); };
+var mkClient = pogo(promise, { host: 'localhost' });
 
-mkClient({ port: 3000 }, function(err, remote) {
+var options = {
+	port: 3000,
+	on: {
+		end: function() {
+			alert('Connection was lost!');
+		}
+	}
+};
+
+mkClient(options, function(err, remote) {
 	Promise.all([
 		remote.add(1, 2),
 		remote.delayedGreet()
@@ -31,9 +40,11 @@ mkClient({ port: 3000 }, function(err, remote) {
 
 ${features}
 
-${"module-types"}
+${types}
 
 ${remote}
+
+${events}
 
 ## Module Functions
 
@@ -50,4 +61,4 @@ HTTP request, you can specify this property which is an object where the key
 is the HTTP header name and the value is what you want the header to be set to.
 - `method`: Defaults to `POST`. Specifies which HTTP method to use for the 
 requests.
-
+- `on`: This option allows you to specify what events you wish to listen to.
