@@ -78,7 +78,6 @@ from the server.
 // property for the module on your application's html.
 var app = angular.module('App', []);
 
-
 var injector = angular.injector(['ng']);
 var $q = injector.get('$q');
 
