@@ -62,3 +62,69 @@ is the HTTP header name and the value is what you want the header to be set to.
 - `method`: Defaults to `POST`. Specifies which HTTP method to use for the 
 requests.
 - `on`: This option allows you to specify what events you wish to listen to.
+
+## Example Uses
+
+### Angular
+
+#### Vanilla as a Constant
+Since pogostick discourages mutations, we can treat the procedure listing as a 
+constant. The server's remote procedures should not change over time, meaning 
+once loaded, we don't need to worry about refreshing the procedures we can call
+from the server.
+
+```javascript
+// Since we're loading the module manually, make sure to NOT place the `ng-app`
+// property for the module on your application's html.
+var app = angular.module('App', []);
+
+
+var injector = angular.injector(['ng']);
+var $q = injector.get('$q');
+
+// start by injecting the promise factory.
+pogo($q)({
+	port: 3000,
+	host: 'localhost'
+}, function(err, remote) {
+	if(err) {
+		// place error page or something.
+	} else {
+		app.constant('$remote', remote);
+		angular.element(document).ready(function() {
+			angular.bootstrap(document, ['App']);
+		});
+	}
+});
+
+app.controller('MainCtrl', ['$scope', '$remote', function($scope, $remote) {
+	$remote
+		// lets say we fetch some items to display to our user.
+		.products()
+		.then(function(list) {
+			$scope.products = list;
+		});
+}]);
+
+```
+
+#### As a Constant Using `angular-deferred-bootstrap`
+
+```javascript
+deferredBootstrapper.bootstrap({
+	element: document,
+	module: 'App',
+	resolve: {
+		'$remote': ['$q', function($q) {
+			return $q(function(resolve, reject) {
+				pogo($q)({
+					port: 3000,
+					host: 'localhost'
+				}, function(err, remote) {
+					if(err) reject(err); else resolve(remote);
+				});
+			});
+		}]
+	}
+});
+```
