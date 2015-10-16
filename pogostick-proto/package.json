@@ -36,6 +36,7 @@
     "mocha": "^2.3.0"
   },
   "dependencies": {
+    "debug": "^2.2.0",
     "extend": "^3.0.0",
     "mk-fn": "^1.0.0"
   }

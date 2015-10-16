@@ -3,8 +3,14 @@
 
 var extend = require('extend');
 var serializer = require('./serializer');
+var debug = require('./debug');
 
 var Exit = require('./exit');
+
+var noop = function() {};
+
+var debugResponse = debug.enabled ?
+	debug.bind(debug, 'serializing result %s') : noop;
 
 function processCall(procs, msg) {
 	
@@ -26,6 +32,7 @@ function processCall(procs, msg) {
 	// the value returned can either be a promise or regular value. 
 	if(typeof res.then === 'function') {
 		return res.then(function(res) {
+			debugResponse(res);
 			if(res instanceof Exit) {
 				return serializer.exit(msg[1], msg[2], res.message);
 			} else {
@@ -37,12 +44,14 @@ function processCall(procs, msg) {
 			// as a rejected promise, so don't process it here.
 			return serializer.err(msg[1], msg[2], err);
 		});
-	} else if(res instanceof Exit) {
-		return serializer.exit(msg[1], msg[2], res.message);
 	} else {
-		return serializer.res(msg[1], msg[2], res);
+		debugResponse(res);
+		if(res instanceof Exit) {
+			return serializer.exit(msg[1], msg[2], res.message);
+		} else {
+			return serializer.res(msg[1], msg[2], res);
+		}
 	}
-
 }
 
 function notExist(msg) {

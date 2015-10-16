@@ -1,6 +1,7 @@
 
 'use strict';
 
+var debug = require('./debug');
 var serializer = require('./serializer');
 var extend = require('extend');
 var mkFn = require('mk-fn');
@@ -70,6 +71,7 @@ function mkRemoteProc(
 		path) {
 	return function() {
 		if(state.isEnded) {
+			debug('Procedure %s has been closed', path);
 			return promiseFactory(function(resolve, reject) {
 				return reject(new Error('Connection is closed'));
 			});
@@ -91,6 +93,7 @@ function mkRemoteProc(
 			var opts = extend({ body: body }, options);
 			requestFactory(opts, function(err, msg) {
 				if(err) {
+					debug('Error %o processing request %o', err, opts);
 					reject(err);
 					if(events.broadcastError) events.error(err);
 					return;
@@ -98,6 +101,7 @@ function mkRemoteProc(
 
 				switch(msg[0]) {
 					case 'exit':
+						
 						// all functions will now return a rejected promise.
 						state.isEnded = true;
 						var exitReason;
@@ -149,6 +153,7 @@ function $implicitly(key, value) {
  * be our remote.
  */ 
 function createRemoteClass(promiseFactory, requestFactory, listing, options) {
+	debug('Creating remote class for listing:\n%e', listing);
 	// At this stage, I don't have much of a choice to add mutable state. If
 	// the remote has been closed at the protocol-level, they need to change 
 	// of state to alter their behaviour. State in this case will be shared
@@ -237,11 +242,14 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 			// the underlying network error should be propagated as it will be the 
 			// more useful than a cryptic, library-specific error. E.g., 
 			// ERRCONREFUSED will be more useful to know.
-			if(err) return cb(err);
-			
+			if(err) {
+				debug('Error %o received for listing requests %o', err, initOpts);
+				return cb(err);
+			}
 			// The protocol permits returning an `err` or `exit` response for the
 			// `ls` call.
 			if(msg[0] === 'err' || msg[0] === 'exit') {
+				debug('Received a `%s` for the response to the listing', msg[0]);
 				return cb(initError(msg));
 			}
 
@@ -252,6 +260,7 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 			try {
 				listing = JSON.parse(msg[3]);
 			} catch(er) {
+				debug('JSON parsing error at listing');
 				return cb(new Error('JSON parser error: ' + er.message));
 			}
 			

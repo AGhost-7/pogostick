@@ -84,6 +84,8 @@ The client in this case will print to the console `Hello AGhost-7`.
 [1]: http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
 
 ### TODOs
-- Add debugging without the overhead. Look into the possibility of using 
-sweetjs node loader to have this working.
+- Add debugging without the overhead. ~~Look into the possibility of using 
+sweetjs node loader to have this working.~~ Use `debug` module to add good debug
+functionality. Avoid doing operations outide of the debug statement; always 
+make it possible for v8 to inline the operation.
 - Stream-based implementation
