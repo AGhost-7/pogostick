@@ -50,11 +50,6 @@ module.exports = {
 		return 'ls\n' +
 			Date.now() + '\n' +
 			randString();
-		//return [
-		//	'ls',
-		//	Date.now(),
-		//	randString()
-		//].join('\n');
 	},	
 
 
@@ -77,12 +72,6 @@ module.exports = {
 				stamp + '\n' +
 				rand + '\n' +
 				body;
-			//return [
-			//	'init', 
-			//	stamp,
-			//	rand,
-			//	body		
-			//].join('\n');
 		};
 	},
 
