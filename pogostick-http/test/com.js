@@ -6,7 +6,7 @@ var proto = require('pogostick-proto');
 var promiseFactory = function(resolver) { return new Promise(resolver); };
 
 var mkClient = proto.client(promiseFactory, require('../lib/reqFactory').http);
-var mkServer = proto.server(require('../lib/serverFactory').http);
+var mkServer = require('../lib/serverFactory').http();
 
 describe('inter-communication', function() {
 

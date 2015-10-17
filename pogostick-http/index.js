@@ -11,16 +11,16 @@ module.exports = {
 	client: function(promiseFactory, options) {
 		return pogo.client(promiseFactory, reqFactory.http, options);
 	},
-	server: function(options) {
-		return pogo.server(serverFactory.http, options);
-	},
+	server: serverFactory.http,//function(options) {
+	//	return pogo.server(serverFactory.http, options);
+	//},
 	https: {
 		client: function(promiseFactory, options) {
 			return pogo.client(promiseFactory, reqFactory.https, options);
 		},
-		server: function(options) {
-			return pogo.server(serverFactory.https, options);
-		}
+		server: serverFactory.https//function(options) {
+		//	return pogo.server(serverFactory.https, options);
+		//}
 	},
 	exit: pogo.exit
 };
