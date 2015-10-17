@@ -47,11 +47,14 @@ module.exports = {
 	 * call from the server
 	 */
  	ls: function() {
-		return [
-			'ls',
-			Date.now(),
-			randString()
-		].join('\n');
+		return 'ls\n' +
+			Date.now() + '\n' +
+			randString();
+		//return [
+		//	'ls',
+		//	Date.now(),
+		//	randString()
+		//].join('\n');
 	},	
 
 
@@ -70,12 +73,16 @@ module.exports = {
 		var body = JSON.stringify(cleaned);
 
 		return function(stamp, rand) {
-			return [
-				'init', 
-				stamp,
-				rand,
-				body		
-			].join('\n');
+			return 'init\n' +
+				stamp + '\n' +
+				rand + '\n' +
+				body;
+			//return [
+			//	'init', 
+			//	stamp,
+			//	rand,
+			//	body		
+			//].join('\n');
 		};
 	},
 
@@ -97,14 +104,12 @@ module.exports = {
 		return {
 			stamp: stamp,
 			rand: rand,
-			str: [
-				'call',
-				stamp,
-				rand,
-				path,
-				JSON.stringify(args),
-				implicits ? JSON.stringify(implicits) : ''
-			].join('\n')
+			str: 'call\n' + 
+				stamp + '\n' +
+				rand + '\n' + 
+				path + '\n' +
+				JSON.stringify(args) + '\n' +
+				(implicits ? JSON.stringify(implicits) : '')
 		};
 	},
 
@@ -116,12 +121,10 @@ module.exports = {
 	 * Sender: Server; Receiver: Client
 	 */ 
 	res: function(stamp, randStr, res) {
-		return [
-			'res',
-			stamp,
-			randStr,
-			JSON.stringify(res)
-		].join('\n');
+		return 'res\n' +
+			stamp + '\n' +
+			randStr + '\n' +
+			JSON.stringify(res);
 	},
 
 	/* Whenever there is an error on the server where the client would probably 
@@ -130,12 +133,10 @@ module.exports = {
 	 * Sender: Server; Receiver: Client
 	 */ 
 	err: function(stamp, randStr, res) {
-		return [
-			'err',
-			stamp,
-			randStr,
-			JSON.stringify(res)
-		].join('\n');
+		return 'err\n' +
+			stamp + '\n' +
+			randStr + '\n' +
+			JSON.stringify(res);
 	},
 	
 	/* Server response or push message sent to close the connection 
@@ -146,19 +147,12 @@ module.exports = {
 	 */
 	exit: function(stamp, randStr, err) {
 		if(arguments.length === 3) {
-			return [
-				'err',
-				stamp,
-				randStr,
-				err
-			].join('\n');
+			return 'err\n' +
+				stamp + '\n' +
+				randStr + '\n' +
+				err;
 		} else {
-			return [
-				'err',
-				'',
-				'',
-				JSON.stringify(err)
-			].join('\n');
+			return 'err\n\n\n' + JSON.stringify(err);
 		}
 	}
 };
