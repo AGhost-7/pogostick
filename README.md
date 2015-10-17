@@ -107,4 +107,5 @@ var server = http.createServer(function(req, res) {
 	}
 });
 ```
+- Figure out how in the nine hells keep-alive is lowering performance.
 - Stream-based implementation

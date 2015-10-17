@@ -59,34 +59,37 @@ function notExist(msg) {
 	return serializer.err(msg[1], msg[2], err);
 }
 
+function createReqHandler(procs) {
+	var procsInit = serializer.init(procs);
+	return function(msg) {
+		switch(msg[0]) {
+			case 'ls':
+				return procsInit(msg[1], msg[2]);
+
+			case 'call':
+				return processCall(procs, msg);
+					
+			default:
+				var err = { 
+					message: 'Could not process request.', 
+					received: msg.join('\n') 
+				};
+				return serializer.err(msg[1], msg[2], err);
+		}	
+
+	};
+}
+
 /* Creates a server instance which will send its results. 
  */
 module.exports = function(serverFactory, opts) {
 	var defOpts = extend({}, opts);
 	return function(procs, opts) {
 		var options = extend(extend({}, defOpts), opts);
-		
-		var procsInit = serializer.init(procs);
-		
-		var processRequest = function(msg) {
-			switch(msg[0]) {
-				case 'ls':
-					return procsInit(msg[1], msg[2]);
-
-				case 'call':
-					return processCall(procs, msg);
-						
-				default:
-					var err = { 
-						message: 'Could not process request.', 
-						received: msg.join('\n') 
-					};
-					return serializer.err(msg[1], msg[2], err);
-			}	
-		};
+		var processRequest = createReqHandler(procs);
 		return serverFactory(processRequest, options);
 	};
 };
 
 
-
+module.exports.fn = createReqHandler;
