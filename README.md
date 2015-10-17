@@ -85,7 +85,26 @@ The client in this case will print to the console `Hello AGhost-7`.
 
 ### TODOs
 - Add debugging without the overhead. ~~Look into the possibility of using 
-sweetjs node loader to have this working.~~ Use `debug` module to add good debug
-functionality. Avoid doing operations outide of the debug statement; always 
-make it possible for v8 to inline the operation.
+sweetjs node loader to have this working.~~ Use `debug` module to add good 
+debuging functionality. Avoid doing operations outide of the debug statement; 
+always make it possible for v8 to inline the operation.
+- Allow low level control of the network implementation without breaking the 
+API. e.g.
+```javascript
+var pogo = require('pogostick-http');
+var pogoHandler = pogo.server.fn({
+	headers: {}
+})({
+	add: function(a, b) {
+		return a + b;
+	}
+});
+var server = http.createServer(function(req, res) {
+	if(req.url === '/rpc') {
+		pogoHandler(req, res);
+	} else {
+		// Use some other router
+	}
+});
+```
 - Stream-based implementation
