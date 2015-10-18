@@ -239,10 +239,21 @@ server instance will inherit the inital options specified in the function.
 The options are the following:
 - `headers` specifies which headers to send out in each request.
 
+### `server.fn(options, procs)`
+Function accepts an options object just like `server(options)` and a object 
+containing the functions that the client will be able to call.
+
+It will return a request handling function which accepts a 
+[http.IncomingMessage][3] and a [http.ServerResponse][4].
+
 ### `https.server(options)`
 Similar to `server(options` with two additional options.
 - `cert`, the ssl certificate.
 - `key`, which is the encryption key.
+
+### `https.server.fn(options, procs)`
+Identical to `server.fn(options, procs)` with the only difference being this is
+for the stock `https` module.
 
 ### `exit([message])`
 This tells the client that the server is no longer available. The client 
@@ -268,3 +279,32 @@ mkServer({
 
 [1]: https://nodejs.org/api/http.html#http_http_request_options_callback
 [2]: https://nodejs.org/api/https.html#https_https_request_options_callback
+[3]: https://nodejs.org/api/http.html#http_http_incomingmessage
+[4]: https://nodejs.org/api/http.html#http_class_http_serverresponse
+
+## Example Uses
+
+### Express.js
+
+```javascript
+var pogo = require('pogostick-http');
+var express = require('express');
+var app = express();
+
+var procedures = {
+	add: function(a, b){ 
+		return a + b;
+	}
+};
+
+var handler = pogo.server.fn({}, procedures);
+
+// Add a middleware to serve up rpc calls.
+app.use('/rpc', function(req, res, next) {
+	hander(req, res);
+});
+
+app.use(express.static('/public'));
+
+...
+```

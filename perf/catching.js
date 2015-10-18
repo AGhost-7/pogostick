@@ -1,5 +1,5 @@
 var bench = require('./bench');
-
+a;
 var iterations = 100000000;
 
 var ncStop = bench();
