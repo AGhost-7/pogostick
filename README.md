@@ -84,28 +84,17 @@ The client in this case will print to the console `Hello AGhost-7`.
 [1]: http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
 
 ### TODOs
-- Add debugging without the overhead. ~~Look into the possibility of using 
-sweetjs node loader to have this working.~~ Use `debug` module to add good 
-debuging functionality. Avoid doing operations outide of the debug statement; 
-always make it possible for v8 to inline the operation.
-- Allow low level control of the network implementation without breaking the 
-API. e.g.
+- Figure out how in the nine hells keep-alive is lowering performance.
+- Stream-based implementation
+- Add `$implicitlyMut`. Easier to use a global remote on the client side where
+the remote remembers, e.g. the authentication token.
+- Add `$forward` to the `this` context:
 ```javascript
-var pogo = require('pogostick-http');
-var pogoHandler = pogo.server.fn({
-	headers: {}
-})({
-	add: function(a, b) {
-		return a + b;
-	}
-});
-var server = http.createServer(function(req, res) {
-	if(req.url === '/rpc') {
-		pogoHandler(req, res);
-	} else {
-		// Use some other router
+server({
+	surface: function(a, b) {
+		// this will take the implicits and create a new mathRemote with the
+		// implicits of the current server in that particular context.
+		return this.$forward(mathRemote).multiply(a, b);
 	}
 });
 ```
-- Figure out how in the nine hells keep-alive is lowering performance.
-- Stream-based implementation
