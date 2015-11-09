@@ -100,8 +100,7 @@ function mkRemoteProc(
 				}
 
 				switch(msg[0]) {
-					case 'exit':
-						
+					case 'exit':	
 						// all functions will now return a rejected promise.
 						state.isEnded = true;
 						var exitReason;
@@ -134,18 +133,64 @@ function mkRemoteProc(
 			});
 		});
 	};
-
 }
+
+/* Mutates the implicit context of the remote. If you call the function with
+ * nothing more than the key name, it will delete that property.
+ */
+function $implicitlyMut(key, value) {
+	if(arguments.length === 1) {
+		delete this._implicits[key];
+	} else {
+		this._implicits[key] = value;
+	}
+	// clear the cache since the implicits were changed.
+	delete this._implicitsCache;
+	return this;
+}
+
 
 /* Creates a new instance with the exact same remote procedures but with a 
  * change in the implicit object.
  */ 
-function $implicitly(key, value) {
-	var impl = {};
-	for(var k in this._implicits) {
-		impl[k] = this._implicits;
+function $implicitly(source) {
+	var impl = Object.create(null), k;
+	for(k in this._implicits) {
+		impl[k] = this._implicits[k];
 	}
-	impl[key] = value;
+	// this method can behave in a couple of different ways...
+	if(typeof arguments[0] === 'object') {
+		switch(arguments.length) {
+
+			case 1:
+				// then we're mixing in everything.
+				for(k in source) {
+					impl[k] = source[k];
+				}
+				break;
+
+			case 2:
+				// transfer only one property from the object.
+				var transferProp  = arguments[1];
+				impl[transferProp] = source[transferProp];
+				break;
+
+			default:
+				// transfer multiple properties from the object
+				var props = Array.prototype.slice.call(arguments, 1);
+				for(var i = 0; i < props.length; i++) {
+					impl[props[i]] = source[props[i]];
+				}
+		}
+	} else {
+		// Then in this case you're only creating with an additional property.
+		// No transfer of data here.
+		var key = arguments[0];
+		var value = arguments[1];
+		impl[key] = value;
+
+	}
+
 	return new this.constructor(impl);
 }
 
@@ -189,6 +234,7 @@ function createRemoteClass(promiseFactory, requestFactory, listing, options) {
 	
 	Remote.prototype = RemoteProto;
 	Remote.prototype.$implicitly = $implicitly;
+	Remote.prototype.$implicitlyMut = $implicitlyMut;
 	
 	// I need to externalize the `end` handler since in some situation the end
 	// will be protocol specific, e.g., tcp streams (persistent connections).
@@ -274,7 +320,7 @@ module.exports = function(promiseFactory, requestFactory, opts) {
 					listing, 
 					defOptions);
 
-			cb(null, new Remote({}));	
+			cb(null, new Remote(Object.create(null)));	
 		});
 	};
 };

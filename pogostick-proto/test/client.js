@@ -92,6 +92,28 @@ describe('client', function() {
 			withName.mock();
 			expect(spy.request).to.contain('foo');
 		});
+
+		it('should mutate implicits', function() {
+			withName.$implicitlyMut('example', 1);
+			withName.mock();
+			expect(spy.request).to.contain('example');
+		});
+
+		it('should delete implicits', function() {
+			withName.$implicitlyMut('example');
+			withName.mock();
+			expect(spy.request).to.not.contain('example');
+		});
+
+		it('should transfer implicits', function() {
+			withName.$implicitly({
+				hello: 'world',
+				foo: 'bar'
+			}).mock();
+			expect(spy.request).to.contain('hello');
+			expect(spy.request).to.contain('bar');
+		});
+
 	});
 
 	describe('closable', function() {
