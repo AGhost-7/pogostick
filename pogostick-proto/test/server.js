@@ -41,7 +41,7 @@ var srv = mkServer(procs);
 describe('server', function() {
 	describe('initialization', function() {
 		before(function() {
-			this.res = srv(serializer.ls().split('\n'));
+			this.res = srv(serializer.ls().str.split('\n'));
 		});
 
 		it('should send an init',function() {

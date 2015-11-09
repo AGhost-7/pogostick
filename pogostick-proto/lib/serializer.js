@@ -47,9 +47,15 @@ module.exports = {
 	 * call from the server
 	 */
  	ls: function() {
-		return 'ls\n' +
-			Date.now() + '\n' +
-			randString();
+		var stamp = Date.now();
+		var rand = randString();
+		return {
+			stamp: stamp,
+			rand: rand,
+			str: 'ls\n' +
+				stamp + '\n' +
+				rand
+		};
 	},	
 
 
