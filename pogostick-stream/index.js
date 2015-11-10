@@ -38,7 +38,6 @@ function mkReqHandler(con) {
 
 	return function(options, cb) {
 		if(closed) {
-			console.log('connection was closed');
 			var err = new Error('Connection was closed');
 			cb(err);
 		} else {
@@ -117,7 +116,16 @@ module.exports = {
 			return pogo.client(promiseFactory, handler)(options, cb);
 		};
 	},
-	server: function(options, procs) {
+	server: function() {
+		var procs, options;
+		if(arguments.length === 1) {
+			procs = arguments[0];
+			options = {};
+		} else {
+			procs = arguments[1];
+			options = arguments[0];
+		}
+		
 		var process = pogo.server.fn(procs, options);
 		return function(stream) {
 			handleRequests(options, stream, process);
