@@ -5,7 +5,6 @@ var net = require('net');
 var fs = require('fs');
 
 var serverHandler = pogo.server({
-}, {
 	ping: function() {
 		return 'pong';
 	},
