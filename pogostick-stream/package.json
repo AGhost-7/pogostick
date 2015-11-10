@@ -1,12 +1,12 @@
 {
-  "name": "pogostick-http",
-  "version": "1.2.7",
-  "description": "Implementation of the pogostick protocol for http.",
-  "main": "index.js",
-  "directories": {
-    "test": "mocha"
-  },
-  "scripts": {
+	"name": "pogostick-stream",
+	"version": "1.0.0",
+	"description": "Use the pogostick RPC with NodeJs streams (TCP, Websockets, etc)",
+	"main": "index.js",
+	"directories": {
+		"test": "mocha"
+	},
+	"scripts": {
 		"ci": "npm run lint && npm run test",
 		"lint": "jshint .",
 		"test": "mocha"
@@ -15,7 +15,7 @@
 		"type": "git",
 		"url": "git+https://github.com/AGhost-7/pogostick.git"
 	},
-  "contributors": [
+	"contributors": [
 		{
 			"name": "Jonathan Boudreau",
 			"email": "jonathan.boudreau.92@gmail.com"
@@ -23,17 +23,18 @@
 	],
 	"keywords": [
 		"rpc",
-		"http",
-		"promise",
-		"server",
-		"client"
-  ],
-  "author": "Jonathan Boudreau",
-  "license": "MIT",
-  "bugs": {
+		"tcp",
+		"websockets",
+		"streams",
+		"response",
+		"request"
+	],
+	"author": "Jonathan Boudreau",
+	"license": "MIT",
+	"bugs": {	
     "url": "https://github.com/AGhost-7/pogostick/issues"
-  },
-  "homepage": "https://github.com/AGhost-7/pogostick#readme",
+	},
+  "homepage": "https://github.com/AGhost-7/pogostick/tree/master/pogostick-stream",
   "devDependencies": {
 		"bluebird": "^2.9.34",
 		"chai": "^3.2.0",
@@ -41,7 +42,6 @@
 		"mocha": "^2.3.0"
   },
   "dependencies": {
-		"extend": "^3.0.0",
-		"pogostick-proto": "^1.2.9"
+		"pogostick-proto": "^2.0.0"
   }
 }
