@@ -7,6 +7,8 @@ ln -s `pwd`/pogostick-proto pogostick-http/node_modules
 mkdir pogostick-browser/node_modules
 ln -s `pwd`/pogostick-http pogostick-browser/node_modules/pogostick-http
 ln -s `pwd`/pogostick-proto pogostick-browser/node_modules/pogostick-proto
+
+mkdir pogostick-stream/node_modules
 ln -s `pwd`/pogostick-proto pogostick-stream/node_modules/pogostick-proto
 
 check-dir() {
